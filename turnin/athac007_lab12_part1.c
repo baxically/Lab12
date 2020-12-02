@@ -1,8 +1,8 @@
 /*	Author: Ally Thach, athac007
  *  Partner(s) Name: 
  *	Lab Section: 24
- *	Assignment: Lab 12  Exercise 2
- *	Exercise Description: Design a system where an illuminated column of the LED matrix can be shifted left or right based on a button press.
+ *	Assignment: Lab 12  Exercise 1
+ *	Exercise Description: Design a system where an illuminated row of the LED matrix can be shifted up or down based on button presses. 
  *
  *	I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
