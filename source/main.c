@@ -13,31 +13,47 @@
 #include "timer.h"
 #endif
 
-unsigned char pattern;
-unsigned char row;
+unsigned char patternArray[2] = { 0x3C, 0x24 };
+unsigned char rowArray[3] = { 0x02, 0x04, 0x08 };
 unsigned char input;
-enum Row_States { Row_Init, Row_Shift } Row_currState;
+unsigned char i;
 
-void RowShift() {
-    switch (Row_currState) {
-        case Row_Init:
-            input = ~PINA;
-            pattern = 0xFF;
-            row = 0x01;
-            Row_currState = Row_Shift;
+enum CenterRect_States { CR_Init, CR_DisplayR2, CR_DisplayR3, CR_DisplayR4 } CR_currState;
+
+void CenterRectDisplay() {
+    switch (CR_currState) {
+        case CR_Init:
+            CR_currState = CR_DisplayR2;
             break;
-        case Row_Shift:
-            input = ~PINA;
-            if (input == 0x02 && row < 0x10) {
-                row <<= 1;
-                Row_currState = Row_Shift;
-            } else if (input == 0x01 && row > 0x01) {
-                row >>= 1;
-                Row_currState = Row_Shift;
-            } else { Row_currState = Row_Shift; }
+        case CR_DisplayR2:
+            CR_currState = CR_DisplayR3;
+            break;
+        case CR_DisplayR3:
+            CR_currState = CR_DisplayR4;
+            break;
+        case CR_DisplayR4:
+            CR_currState = CR_DisplayR2;
+            break;
+        default:
             break;
     }
-    PORTC = pattern; PORTD = ~row;
+    
+    switch (CR_currState) {
+        case CR_DisplayR2:
+            PORTC = patternArray[0];
+            PORTD = ~rowArray[0];
+            break;
+        case CR_DisplayR3:
+            PORTC = patternArray[1];
+            PORTD = ~rowArray[1];
+            break;
+        case CR_DisplayR4:
+            PORTC = patternArray[0];
+            PORTD = ~rowArray[2];
+            break;
+        default:
+            break;
+    }
 }
 
 int main(void) {
@@ -46,12 +62,12 @@ int main(void) {
     DDRC = 0xFF; PORTC = 0x00;
     DDRD = 0xFF; PORTD = 0x00;
 
-    TimerSet(100);
-    Row_currState = Row_Init;
+    TimerSet(1);
+    CR_currState = CR_Init;
     TimerOn();
     /* Insert your solution below */
     while (1) {
-        RowShift();
+        CenterRectDisplay();
         while(!TimerFlag);
         TimerFlag = 0;
     }
