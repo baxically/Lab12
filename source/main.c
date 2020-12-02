@@ -1,11 +1,13 @@
-/*	Author: lab
+/*	Author: Ally Thach, athac007
  *  Partner(s) Name: 
- *	Lab Section:
- *	Assignment: Lab #  Exercise #
- *	Exercise Description: [optional - include for your own benefit]
+ *	Lab Section: 24
+ *	Assignment: Lab 12  Exercise 1
+ *	Exercise Description: Design a system where an illuminated row of the LED matrix can be shifted up or down based on button presses.
  *
  *	I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
+ *
+ *  DEMO LINK:
  */
 #include <avr/io.h>
 #ifdef _SIMULATE_
@@ -15,44 +17,63 @@
 
 unsigned char pattern;
 unsigned char row;
-unsigned char input;
-enum Row_States { Row_Init, Row_Shift } Row_currState;
+unsigned char tmpA;
 
-void RowShift() {
-    switch (Row_currState) {
-        case Row_Init:
-            input = ~PINA;
+enum Demo_States {init, shift} currState;
+
+void Demo_Tick()
+{
+    switch (currState)
+    {
+        case init:
+            tmpA = ~PINA;
             pattern = 0xFF;
             row = 0x01;
-            Row_currState = Row_Shift;
+            
+            currState = shift;
             break;
-        case Row_Shift:
-            input = ~PINA;
-            if (input == 0x02 && row < 0x10) {
+        case shift:
+            tmpA = ~PINA;
+            if (tmpA == 0x01 && row < 0x10)
+            {
                 row <<= 1;
-                Row_currState = Row_Shift;
-            } else if (input == 0x01 && row > 0x01) {
+                currState = shift;
+            }
+            else if tmpA == 0x02 && row > 0x01)
+            {
                 row >>= 1;
-                Row_currState = Row_Shift;
-            } else { Row_currState = Row_Shift; }
+                currState = shift;
+            }
+            else
+            {
+                currState = shift;
+                
+            }
             break;
     }
-    PORTC = pattern; PORTD = ~row;
+    PORTC = pattern;
+    PORTD = ~row;
 }
 
 int main(void) {
     /* Insert DDR and PORT initializations */
-    DDRA = 0x00; PORTA = 0xFF;
-    DDRC = 0xFF; PORTC = 0x00;
-    DDRD = 0xFF; PORTD = 0x00;
+    DDRA = 0x00;
+    PORTA = 0xFF;
+    DDRC = 0xFF;
+    PORTC = 0x00;
+    DDRD = 0xFF;
+    PORTD = 0x00;
 
     TimerSet(100);
-    Row_currState = Row_Init;
+    currState = init;
     TimerOn();
     /* Insert your solution below */
     while (1) {
-        RowShift();
-        while(!TimerFlag);
+        shift();
+        while(!TimerFlag)
+        {
+            
+        };
         TimerFlag = 0;
     }
     return 1;
