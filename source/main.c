@@ -69,7 +69,7 @@ int main(void) {
     TimerOn();
     /* Insert your solution below */
     while (1) {
-        shift();
+        Demo_Tick();
         while(!TimerFlag)
         {
             
