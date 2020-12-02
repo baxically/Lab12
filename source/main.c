@@ -2,7 +2,7 @@
  *  Partner(s) Name: 
  *	Lab Section: 24
  *	Assignment: Lab 12  Exercise 1
- *	Exercise Description: Design a system where an illuminated row of the LED matrix can be shifted up or down based on button presses. 
+ *	Exercise Description: Design a system where an illuminated row of the LED matrix can be shifted up or down based on button presses.
  *
  *	I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
@@ -18,10 +18,10 @@
 unsigned char pattern;
 unsigned char row;
 unsigned char tmpA;
-
 enum Demo_States {init, shift } currState;
 
-void Demo_Tick() {
+void Demo_Tick()
+{
     switch (currState) {
         case init:
             tmpA = ~PINA;
@@ -31,14 +31,14 @@ void Demo_Tick() {
             break;
         case shift:
             tmpA = ~PINA;
-            if(tmpA == 0x01 && pattern < 0x10)
+            if (tmpA == 0x01 && row < 0x10)
             {
-                pattern <<= 1;
+                row <<= 1;
                 currState = shift;
             }
-            else if(tmpA == 0x02 && pattern > 0x01)
+            else if (tmpA == 0x02 && row > 0x01)
             {
-                pattern >>= 1;
+                row >>= 1;
                 currState = shift;
             }
             else
@@ -65,9 +65,8 @@ int main(void) {
     currState = init;
     TimerOn();
     /* Insert your solution below */
-    while (1)
-    {
-        Demo_Tick();
+    while (1) {
+        Demo_Link();
         while(!TimerFlag)
         {
             
