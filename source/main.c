@@ -36,7 +36,7 @@ void Demo_Tick() {
                 pattern <<= 1;
                 currState = shift;
             }
-            else if(input == 0x02 && pattern > 0x01)
+            else if(tmpA == 0x02 && pattern > 0x01)
             {
                 pattern >>= 1;
                 currState = shift;
