@@ -66,7 +66,7 @@ int main(void) {
     TimerOn();
     /* Insert your solution below */
     while (1) {
-        Demo_Link();
+        Demo_Tick();
         while(!TimerFlag)
         {
             
