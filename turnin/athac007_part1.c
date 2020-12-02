@@ -1,8 +1,8 @@
 /*	Author: Ally Thach, athac007
  *  Partner(s) Name: 
  *	Lab Section: 24
- *	Assignment: Lab 12  Exercise 2
- *	Exercise Description: Design a system where an illuminated column of the LED matrix can be shifted left or right based on a button press.
+ *	Assignment: Lab 12  Exercise 1
+ *	Exercise Description: Design a system where an illuminated row of the LED matrix can be shifted up or down based on button presses.
  *
  *	I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
@@ -19,26 +19,29 @@ unsigned char pattern;
 unsigned char row;
 unsigned char tmpA;
 
-enum Demo_States {init, shift } currState;
+enum Demo_States {init, shift} currState;
 
-void Demo_Tick() {
-    switch (currState) {
+void Demo_Tick()
+{
+    switch (currState)
+    {
         case init:
             tmpA = ~PINA;
-            pattern = 0x80;
-            row = 0x1F;
+            pattern = 0xFF;
+            row = 0x01;
+            
             currState = shift;
             break;
         case shift:
             tmpA = ~PINA;
-            if(tmpA == 0x01 && pattern < 0x80)
+            if(tmpA == 0x01 && row < 0x10)
             {
-                pattern <<= 1;
+                row <<= 1;
                 currState = shift;
             }
-            else if(tmpA == 0x02 && pattern > 0x01)
+            else if(tmpA == 0x02 && row > 0x01)
             {
-                pattern >>= 1;
+                row >>= 1;
                 currState = shift;
             }
             else
@@ -65,13 +68,12 @@ int main(void) {
     currState = init;
     TimerOn();
     /* Insert your solution below */
-    while (1)
-    {
+    while (1) {
         Demo_Tick();
         while(!TimerFlag)
         {
             
-        }
+        };
         TimerFlag = 0;
     }
     return 1;
