@@ -1,8 +1,8 @@
 /*	Author: Ally Thach, athac007
  *  Partner(s) Name: 
  *	Lab Section: 24
- *	Assignment: Lab 12  Exercise 2
- *	Exercise Description: Design a system where an illuminated column of the LED matrix can be shifted left or right based on a button press.
+ *	Assignment: Lab 12  Exercise 3
+ *	Exercise Description: Design a system where a 3x4 hollow rectangle is displayed in the center of the LED matrix like the photo below: Note: The varying brightness of the LEDs is only present in the photo. The completed exercise will not have varying brightness.
  *
  *	I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
@@ -15,41 +15,49 @@
 #include "timer.h"
 #endif
 
-unsigned char pattern;
-unsigned char row;
+unsigned char patternArray[2] = {0x3C, 0x24};
+unsigned char rowArray[3] = {0x02, 0x04, 0x08};
 unsigned char tmpA;
+unsigned char i;
 
-enum Demo_States {init, shift } currState;
+enum Demo_States {init, displayR2, displayR3, displayR4 } currState;
 
-void Demo_Tick() {
+void Demo_Tick()
+{
     switch (currState) {
         case init:
-            tmpA = ~PINA;
-            pattern = 0x80;
-            row = 0x1F;
-            currState = shift;
+            currState = displayR2;
             break;
-        case shift:
-            tmpA = ~PINA;
-            if(tmpA == 0x01 && pattern < 0x80)
-            {
-                pattern <<= 1;
-                currState = shift;
-            }
-            else if(tmpA == 0x02 && pattern > 0x01)
-            {
-                pattern >>= 1;
-                currState = shift;
-            }
-            else
-            {
-                currState = shift;
-                
-            }
+        case displayR2:
+            currState = displayR3;
+            break;
+        case displayR3:
+            currState = displayR4;
+            break;
+        case displayR4:
+            currState = displayR2;
+            break;
+        default:
             break;
     }
-    PORTC = pattern;
-    PORTD = ~row;
+    
+    switch (currState)
+    {
+        case displayR2:
+            PORTC = patternArray[0];
+            PORTD = ~rowArray[0];
+            break;
+        case displayR3:
+            PORTC = patternArray[1];
+            PORTD = ~rowArray[1];
+            break;
+        case displayR4:
+            PORTC = patternArray[0];
+            PORTD = ~rowArray[2];
+            break;
+        default:
+            break;
+    }
 }
 
 int main(void) {
@@ -61,7 +69,7 @@ int main(void) {
     DDRD = 0xFF;
     PORTD = 0x00;
 
-    TimerSet(100);
+    TimerSet(1);
     currState = init;
     TimerOn();
     /* Insert your solution below */
