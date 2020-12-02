@@ -34,12 +34,12 @@ void Demo_Tick()
             break;
         case shift:
             tmpA = ~PINA;
-            if (tmpA == 0x01 && row < 0x10)
+            if(tmpA == 0x01 && row < 0x10)
             {
                 row <<= 1;
                 currState = shift;
             }
-            else if tmpA == 0x02 && row > 0x01)
+            else if(tmpA == 0x02 && row > 0x01)
             {
                 row >>= 1;
                 currState = shift;
