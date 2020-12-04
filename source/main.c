@@ -98,7 +98,7 @@ void Button_Tick()
                 }
                 button_currState = button_press;
             }
-            else if (input == 0x02 && rowArray[0] < 0x10)
+            else if (tmpA == 0x02 && rowArray[0] < 0x10)
             {
                 for (i = 0; i < 3; i++)
                 {
